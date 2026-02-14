@@ -28,15 +28,19 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [ openssl ];
 
-  env.NIX_CFLAGS_COMPILE = toString [
-    "-Wno-error=format-security"
-  ];
+  # env.NIX_CFLAGS_COMPILE = toString [
+  #   "-Wno-error=format-security"
+  # ];
+  hardeningDisable = [ "format" ];
 
   configureFlags = [
-    "--enable-systemd"
+    "--with-probe-type=generic"
+    #"--enable-systemd"
+    "--disable-systemd"
     "--disable-chown"
     "--disable-setcap-install"
     "--runstatedir=/run"
+    "--sysconfdir=${placeholder "out"}/var/lib/atlas"
     "--with-user=${withUser}"
     "--with-group=${withGroup}"
     "--with-measurement-user=${withMeasurementUser}"
@@ -51,6 +55,6 @@ stdenv.mkDerivation (finalAttrs: {
     homepage = "https://github.com/RIPE-NCC/ripe-atlas-software-probe";
     changelog = "https://github.com/RIPE-NCC/ripe-atlas-software-probe/blob/v${finalAttrs.version}/CHANGES.rst";
     license = lib.licenses.gpl3Only;
-    maintainers = with lib.maintainers; [ raitobezarius ];
+    maintainers = with lib.maintainers; [ l33tname ];
   };
 })
